@@ -4,10 +4,12 @@ import { useGetChangeHandler } from "../../../hooks/useGetChangeHandler";
 import { useSetRecoilState } from "recoil";
 import { UserAtom } from "../../../recoil/UserAtom";
 import { useGetEnterHandler } from "../../../hooks/useGetEnterHandler";
+import Loading from "../../../components/Loading";
 
 const Login = () => {
   const [loginId, setLoginId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const setUserInfo = useSetRecoilState(UserAtom);
 
   const handleChangeId = useGetChangeHandler(setLoginId);
@@ -17,7 +19,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     if (loginId.length === 0 || password.length === 0) return;
-
+    setIsLoading(true);
     const serverUrl = import.meta.env.VITE_SERVER_URL + "/auth/login";
     fetch(serverUrl, {
       method: "POST",
@@ -38,7 +40,8 @@ const Login = () => {
           });
           navigate("/");
         }
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const handleKeyDown = useGetEnterHandler(handleLogin);
@@ -46,6 +49,7 @@ const Login = () => {
   return (
     <div className="flex flex-col gap-[20px] my-auto">
       <div className="w-[500px] h-auto bg-white rounded-md self-center flex items-center justify-center flex-col px-3 pt-5">
+        {isLoading && <Loading />}
         <div className="text-[20px] mb-3">Log into your account</div>
         <input
           type="text"
