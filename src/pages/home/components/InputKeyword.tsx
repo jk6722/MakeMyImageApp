@@ -6,16 +6,23 @@ import { useGetEnterHandler } from "../../../hooks/useGetEnterHandler";
 
 const InputKeyword = ({
   setImageUrl,
+  setIsLoading,
 }: {
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const userInfo = useRecoilValue(UserAtom);
   const [keyword, setKeyword] = useState<string>("");
   const handleChangeKeyword = useGetChangeHandler(setKeyword);
 
   const handleGenerateImage = () => {
-    if (keyword.length === 0 || userInfo.loginId === "") return;
+    if (userInfo.loginId === "") {
+      window.alert("로그인 후 이용이 가능합니다");
+      return;
+    }
+    if (keyword.length === 0) return;
     const serverUrl = import.meta.env.VITE_SERVER_URL + "/api/image";
+    setIsLoading(true);
     fetch(serverUrl, {
       method: "POST",
       headers: {
@@ -32,7 +39,8 @@ const InputKeyword = ({
           setImageUrl(res?.result?.url);
           setKeyword("");
         }
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const handleKeyDown = useGetEnterHandler(handleGenerateImage);

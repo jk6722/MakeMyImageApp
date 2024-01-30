@@ -12,8 +12,12 @@ const Header = () => {
   }, [navigate]);
 
   const navToGallery = useCallback(() => {
+    if (userInfo.loginId === "") {
+      window.alert("로그인 후 이용이 가능합니다");
+      return;
+    }
     navigate("/images");
-  }, [navigate]);
+  }, [navigate, userInfo.loginId]);
 
   const navToHome = useCallback(() => {
     navigate("/");
