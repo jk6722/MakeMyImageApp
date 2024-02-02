@@ -58,7 +58,7 @@ const Login = () => {
           onChange={handleChangeId}
         />
         <input
-          type="text"
+          type="password"
           className="w-full px-3 py-3 border-b-2 focus:outline-none"
           placeholder="Enter Your Password"
           onChange={handleChangePw}
